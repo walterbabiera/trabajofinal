@@ -324,3 +324,148 @@ main()
 	}while(opcionmenu!=5);
 }
 
+bool verificacionnombre(int vou, char nombre[15])
+{
+	int i, tamano, contadormayusculas=0, contadordigitos=0;
+	
+	bool controldigitos, filtro, verificacion;
+	
+	usuarios aux;
+	
+	tamano=strlen(nombre);
+	
+	
+	if(tamano<6 || tamano>10)
+	{
+		verificacion=false;
+		
+		return verificacion;
+	}
+		
+	for(i=0;i<tamano;i++)
+	{
+		controldigitos=false;
+		
+		if(nombre[i]==33 || nombre[i]==42 || nombre[i]==43 || nombre[i]==45 || nombre[i]==47 || nombre[i]==63 || nombre[i]==168 || nombre[i]==173)//estos son los vectores que delimitan el tamaño de la palabra
+		{
+			controldigitos=true;
+			
+			if(i!=0)
+			{
+				contadordigitos++;
+			}
+		}
+		else
+		{
+			if(nombre[i]<=57 && nombre[i]>=48)
+			{
+				controldigitos=true;
+				
+				if(i!=0)
+				{
+					contadordigitos++;
+				}
+			}
+			else
+			{
+				if(nombre[i]<=90 && nombre[i]>=65)
+				{
+					controldigitos=true;
+					
+					if(i!=0)
+					{
+						contadormayusculas++;
+					}
+				}
+				else
+				{
+					if(nombre[i]<=122 && nombre[i]>=97)
+					{
+						controldigitos=true;
+						
+						if(i==0)
+						{
+							filtro=true;
+						}
+					}
+				}
+			}
+		}
+		
+		if(controldigitos==false)
+		{
+			verificacion=false;
+			
+			return verificacion;
+		}
+	}
+	
+	if(filtro==true && contadormayusculas>=2 && contadordigitos<=3)
+	{
+		verificacion=true;
+	}
+	else
+	{
+		verificacion=false;
+		
+		return verificacion;
+	}
+	
+	FILE *arch;
+	
+	if(vou==0)
+	{
+		arch=fopen("Veterinarios.dat", "rb");
+	
+		if(arch==NULL)
+		{
+			verificacion=true;
+		}
+		else
+		{
+			fread(&aux, sizeof(usuarios), 1, arch);
+			
+			while(!feof(arch))
+			{
+				if(strcmp(nombre, aux.Usuario)==0)
+				{
+					verificacion=false;
+					
+					return verificacion;
+				}
+				
+				fread(&aux, sizeof(usuarios), 1, arch);
+			}
+		}
+	}
+	else
+	{
+		arch=fopen("Usuarios.dat", "rb");
+	
+		if(arch==NULL)
+		{
+			verificacion=true;
+		}
+		else
+		{
+			fread(&aux, sizeof(usuarios), 1, arch);
+			
+			while(!feof(arch))
+			{
+				if(strcmp(nombre, aux.Usuario)==0)
+				{
+					verificacion=false;
+					
+					return verificacion;
+				}
+				
+				fread(&aux, sizeof(usuarios), 1, arch);
+			}
+		}
+	}
+	
+	fclose(arch);
+	
+	return verificacion;
+}
+
