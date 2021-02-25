@@ -346,7 +346,7 @@ bool verificacionnombre(int vou, char nombre[15])
 	{
 		controldigitos=false;
 		
-		if(nombre[i]==33 || nombre[i]==42 || nombre[i]==43 || nombre[i]==45 || nombre[i]==47 || nombre[i]==63 || nombre[i]==168 || nombre[i]==173)//estos son los vectores que delimitan el tamaño de la palabra
+		if(nombre[i]==33 || nombre[i]==42 || nombre[i]==43 || nombre[i]==45 || nombre[i]==47 || nombre[i]==63 || nombre[i]==168 || nombre[i]==173)
 		{
 			controldigitos=true;
 			
@@ -476,9 +476,9 @@ bool verificacioncontrasena(char contra[35])
 	
 	bool controldigitos, filtro, verificacion;
 	
-	tamano=strlen(contra); //cantidad predeterminada (revisar)
+	tamano=strlen(contra);
 	
-	//printf("%d", tamano);
+
 	
 	if(tamano<6 || tamano>32)
 	{
@@ -503,7 +503,7 @@ bool verificacioncontrasena(char contra[35])
 				
 				numdigito=contra[i];
 				
-				//printf("\n-%d-\n", numdigito);
+		
 				
 				if(contra[i+1]==numdigito+1)
 				{
@@ -565,3 +565,214 @@ bool verificacioncontrasena(char contra[35])
 	}
 }
 
+void registracionconfirmada(int vou, char nombre[15], char contra[35])
+{
+	int tamano;
+	
+	char apenom[60];
+	
+	printf("\n----------\n\n");
+	
+	printf("-DATOS DE USUARIO\n\n");
+	
+	printf("Ingresar apellido y nombre: ");
+	_flushall();
+				
+	gets(apenom);
+	
+	tamano=strlen(apenom);
+	
+	if(tamano==0)
+	{
+		printf("\n>El campo no puede permanecer vacio. Vuelva a intentarlo.\n\n");
+		
+		printf("Ingresar apellido y nombre: ");
+		_flushall();
+					
+		gets(apenom);
+		
+		tamano=strlen(apenom);
+	}
+	
+	FILE *arch;
+	
+	if(vou==0)
+	{
+		arch=fopen("Veterinarios.dat", "ab+");
+	
+		usuarios confirmado;// variables 
+		veterinario datosconfirmado;
+		
+		strcpy(confirmado.Usuario, nombre);
+		strcpy(confirmado.Contrasena, contra);
+		strcpy(confirmado.ApeNom, apenom);
+		
+		fwrite(&confirmado, sizeof(usuarios), 1, arch);
+		
+		strcpy(datosconfirmado.ApeNom, apenom);
+		
+		printf("\nIngresar matricula del veterinario: ");
+		scanf("%d", &datosconfirmado.Matricula);
+		
+		printf("\n Ingresar DNI del veterinario: ");
+		scanf("%d", &datosconfirmado.DNI);
+		
+		printf("\nIngresar número telefonico del veterinario: ");
+		_flushall();
+		
+		gets(datosconfirmado.Telefono);
+		
+		fwrite(&datosconfirmado, sizeof(veterinario), 1, arch);
+	}
+	else
+	{
+		arch=fopen("Usuarios.dat", "ab+");
+	
+		usuarios confirmado;
+		
+		strcpy(confirmado.Usuario, nombre);
+		strcpy(confirmado.Contrasena, contra);
+		strcpy(confirmado.ApeNom, apenom);
+		
+		fwrite(&confirmado, sizeof(usuarios), 1, arch);
+	}
+	
+	
+	fclose(arch);
+}
+
+void atencionporveterinarios()
+{
+	FILE *archturnos, *archmascotas;
+	
+	int mes;
+	
+	bool existe=false;
+	
+	turnos auxturnos;
+	mascota auxmascotas;
+	
+	printf("Ingresar mes del que quiere conocer las atenciones: ");
+	scanf("%d", &mes);
+	
+	archturnos=fopen("Turnos.dat", "rb");
+	
+	if(archturnos==NULL)
+	{
+		printf("Aun no se ha registrado ningún turno.\n");
+	}
+	else
+	{
+		fread(&auxturnos, sizeof(turnos), 1, archturnos);
+	
+		while(!feof(archturnos))
+		{
+			if(auxturnos.fechaturno.mm==mes && auxturnos.borrado==true)
+			{
+				printf("\n----------\n\n");
+				
+				printf("Fecha de atención: %-0.2d/%-0.2d/%d", auxturnos.fechaturno.dd, auxturnos.fechaturno.mm, auxturnos.fechaturno.aa);
+								
+				printf("\nDNI del dueño: %d", auxturnos.DNI_Dueno);
+				
+				printf("\nMatricula del veterinario que atendió: %d", auxturnos.matriculaveterinario);
+				
+				printf("\nDetalle de la consulta: %s", auxturnos.detalle);
+				
+				printf("\n\n");
+				
+				existe=true;
+			}
+			
+			fread(&auxturnos, sizeof(turnos), 1, archturnos);
+		}
+		
+		if(existe==false)
+		{
+			printf("\n>No se ha realizado ningún turno en el mes seleccionado.\n\n");
+		}
+	}	
+}
+
+void ranking()
+{
+	FILE *archveterinario, *archturnos;
+	
+	int mes, matricula, cont, matriculamayor, contmayor=0;
+	
+	usuarios auxusuarios;
+	veterinario auxveterinario;
+	turnos auxturnos;
+	
+	archveterinario=fopen("Veterinarios.dat", "rb");
+	
+	if(archveterinario==NULL)
+	{
+		printf("Aún no se han registrado veterinarios.\n");
+	}
+	else
+	{
+		archturnos=fopen("Turnos.dat", "rb");
+	
+		if(archturnos==NULL)
+		{
+			printf("Aún no se han registrado turnos.\n");
+		}
+		else
+		{
+			printf("Ingresar mes del que quiere conocer el ranking: ");
+			scanf("%d", &mes);
+			
+			printf("\n\n");
+			
+			fread(&auxusuarios, sizeof(usuarios), 1, archveterinario);
+			while(!feof(archveterinario))
+			{
+				cont=0;
+				
+				fread(&auxveterinario, sizeof(veterinario), 1, archveterinario);
+				
+				matricula=auxveterinario.Matricula;
+				
+				fread(&auxturnos, sizeof(turnos), 1, archturnos);
+				
+				while(!feof(archturnos))
+				{
+					if(matricula==auxturnos.matriculaveterinario)
+					{
+						if(auxturnos.borrado==true && mes==auxturnos.fechaturno.mm)
+						{
+							cont++;
+						}
+					}
+					
+					fread(&auxturnos, sizeof(turnos), 1, archturnos);
+				}
+				
+				fseek(archturnos, 0, SEEK_SET); 
+				
+				printf("Matricula: %d", matricula);
+				printf("\nCantidad de atenciones: %d", cont);
+				
+				printf("\n\n----------\n\n");
+				
+				if(cont>contmayor)
+				{
+					contmayor=cont;
+					matriculamayor=matricula;
+				}
+				
+				fread(&auxusuarios, sizeof(usuarios), 1, archveterinario);
+			}
+		}
+		
+		if(contmayor==0)
+		{
+			printf("Ningún veterinario a realizado atenciones en este periodo.\n");	
+		}
+		else
+		{
+			printf("Matricula de veterinario ganador del ranking: %d\n", matriculamayor);
+		}
+	}
+}
