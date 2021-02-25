@@ -315,4 +315,193 @@ void registromascota()
 	
 	fclose(arch);
 }
+void registroturno()
+{
+	FILE *arch;
+	
+	int matricula, dni;
+	
+	bool matriculaencontrada=false, dniencontrado=false;
+	
+	usuarios aux;
+	veterinario aux2;
+	mascota aux3;
+	
+	turnos registro;
+	
+	printf("Matricula de veterinario que va a atender a la mascota: ");
+	scanf("%d", &matricula);
+	
+	arch=fopen("Veterinarios.dat", "rb");
+	
+	fread(&aux, sizeof(usuarios), 1, arch);
+	
+	while(!feof(arch))//revisar que hace feof
+	{
+		fread(&aux2, sizeof(veterinario), 1, arch);
+		
+		if(matricula==aux2.Matricula)
+		{
+			matriculaencontrada=true;
+		}
+		
+		fread(&aux, sizeof(usuarios), 1, arch);
+	}
+	
+	fclose(arch);
+	
+	while(matriculaencontrada==false)
+	{
+		printf("\n>La matricula ingresada no pertenece a ningún veterinario. Intentelo nuevamente.\n\n");
+		
+		printf("Matricula de veterinario que va a atender a la mascota: ");
+		scanf("%d", &matricula);
+		
+		arch=fopen("Veterinarios.dat", "rb");
+		
+		fread(&aux, sizeof(usuarios), 1, arch);
+		
+		while(!feof(arch))
+		{
+			fread(&aux2, sizeof(veterinario), 1, arch);
+			
+			if(matricula==aux2.Matricula)
+			{
+				matriculaencontrada=true;
+			}
+			
+			fread(&aux, sizeof(usuarios), 1, arch);
+		}
+		
+		fclose(arch);
+	}
+	
+	registro.matriculaveterinario=matricula;//registra la matricula del veterinario (guarda)
+	
+	printf("\nFecha de la consulta: ");
+	printf("\nDia: ");
+	scanf("%d", &registro.fechaturno.dd);	
+	printf("Mes: ");
+	scanf("%d", &registro.fechaturno.mm);
+	printf("Año: ");
+	scanf("%d", &registro.fechaturno.aa);
+	
+	printf("\nDNI del dueño: ");
+	scanf("%d", &dni);
+	
+	arch=fopen("Mascotas.dat", "rb");
+	
+	fread(&aux3, sizeof(mascota), 1, arch);//revisar que hace
+	
+	while(!feof(arch))
+	{
+		if(dni==aux3.DNI_Dueno)
+		{
+			dniencontrado=true;
+		}
+		
+		fread(&aux3, sizeof(mascota), 1, arch);
+	}
+	
+	fclose(arch);
+	
+	while(dniencontrado==false)
+	{
+		printf("\n>EL DNI no pertenece a ningún dueño registrado. Intentelo nuevamente.\n\n");
+		
+		printf("DNI del dueño: ");
+		scanf("%d", &dni);
+		
+		arch=fopen("Mascotas.dat", "rb");
+		
+		fread(&aux3, sizeof(mascota), 1, arch);
+		
+		while(!feof(arch))
+		{
+			if(dni==aux3.DNI_Dueno)
+			{
+				dniencontrado=true;
+			}
+			
+			fread(&aux3, sizeof(mascota), 1, arch);
+		}
+		
+		fclose(arch);
+	}
+	
+	registro.DNI_Dueno=dni;
+	
+	registro.detalle[0]='-';
+	
+	registro.borrado=false;
+	
+	arch=fopen("Turnos.dat", "ab+");
+	
+	fwrite(&registro, sizeof(turnos), 1, arch);
+	
+	fclose(arch);
+}
 
+void listadoturnos()
+{
+	FILE *arch, *arch2;
+	
+	turnos registro;
+	mascota aux;
+	
+	int i, dni;
+	
+	char mascotas[60];
+	
+	arch=fopen("Turnos.dat", "rb");
+	arch2=fopen("Mascotas.dat", "rb");
+	
+	if(arch==NULL)
+	{
+		printf("Todavía no se han registrado turnos.\n");
+	}
+	else
+	{	
+		printf("%*s|%*s|%*s\n", -14, "FECHA", -12, "MATRICULA", -30, "MASCOTA");//busca la fecha del turno la matricula del veterinario y la mascota
+	
+		for(i=0;i<50;i++)
+		{
+			printf("=");
+		}
+		
+		printf("\n");
+		
+		fread(&registro, sizeof(turnos), 1, arch);
+
+		while(!feof(arch))
+		{
+			dni=registro.DNI_Dueno;
+			
+			fread(&aux, sizeof(mascota), 1, arch2);
+			
+			while(!feof(arch2))
+			{	
+				if(dni==aux.DNI_Dueno)
+				{
+					strcpy(mascotas, aux.ApeNom);
+				}
+				
+				fread(&aux, sizeof(mascota), 1, arch2);
+			}
+			
+			fseek(arch2, 0, SEEK_SET);
+			
+			if(registro.borrado==false)
+			{
+				printf("%-0.2d/%-0.2d/%*d|%*d|%*s\n", registro.fechaturno.dd, registro.fechaturno.mm, -8, registro.fechaturno.aa, -12, registro.matriculaveterinario, -30, mascotas);//busca dentro del registro
+			}
+			
+			fread(&registro, sizeof(turnos), 1, arch);
+		}
+		
+		fclose(arch);
+		
+		fclose(arch2);
+	}
+	
+}
