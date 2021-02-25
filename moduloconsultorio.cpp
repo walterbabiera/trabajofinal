@@ -389,4 +389,100 @@ void listadoturnos(int matric)
 	fclose(archturnos);
 	fclose(archmascotas);
 }
+void evolucion(int matric)
+{
+	FILE *archturnos, *archmascotas;
+	
+	int dni, pos;
+	
+	char ApeNom[60];
+	
+	bool band=false, encontrado=false;
+	
+	turnos auxturnos;
+	mascota auxmascotas;
+	
+	archturnos=fopen("Turnos.dat", "r+b");
+	
+	if(archturnos==NULL)
+	{
+		printf("Aún no se han registrado turnos.\n");
+	}
+	else
+	{
+		archmascotas=fopen("Mascotas.dat", "rb");
+		
+		if(archmascotas==NULL)
+		{
+			printf("Aún no se han registrado mascotas.\n");
+		}
+		else
+		{
+			printf("Ingresar apellido y nombre de mascota que se atendió: ");
+			_flushall();
+			
+			gets(ApeNom);
+			
+			fread(&auxturnos, sizeof(turnos), 1, archturnos);
+			
+			while(feof(archturnos)==0 && band==false)
+			{	
+			
+				if(auxturnos.matriculaveterinario==matric)
+				{
+						dni=auxturnos.DNI_Dueno;
+					
+						fread(&auxmascotas, sizeof(mascota), 1, archmascotas);
+						
+						while(!feof(archmascotas) && band==false)
+						{	
+							if(strcmp(ApeNom, auxmascotas.ApeNom)==0 && dni==auxmascotas.DNI_Dueno && auxturnos.borrado==false)
+							{
+								printf("Detalle de atención (hasta 380 caracteres): ");
+								gets(auxturnos.detalle);
+								
+								auxturnos.borrado=true;
+								
+								pos=ftell(archturnos)-sizeof(turnos);//revisar que hace ftell
+			
+								fseek(archturnos, pos, SEEK_SET);
+								
+								fwrite(&auxturnos, sizeof(turnos), 1, archturnos);
+								
+								encontrado=true;
+								
+								band=true;
 
+							}
+							else
+							{
+								fread(&auxmascotas, sizeof(mascota), 1, archmascotas);
+							}
+
+						}
+						
+						fseek(archmascotas, 0, SEEK_SET);
+						
+						if(encontrado==false)
+						{
+							fread(&auxturnos, sizeof(turnos), 1, archturnos);	
+						}			
+				}
+				else
+				{
+					fread(&auxturnos, sizeof(turnos), 1, archturnos);
+				}
+				
+			}
+			
+			if(encontrado==false)
+			{
+				printf("El nombre ingresado no corresponde a ninguna mascota con turno.\n\n");
+			}
+		}
+	}
+	
+	fclose(archturnos);
+	fclose(archmascotas);
+	
+}
