@@ -600,7 +600,7 @@ void registracionconfirmada(int vou, char nombre[15], char contra[35])
 	{
 		arch=fopen("Veterinarios.dat", "ab+");
 	
-		usuarios confirmado;// variables 
+		usuarios confirmado;
 		veterinario datosconfirmado;
 		
 		strcpy(confirmado.Usuario, nombre);
