@@ -51,7 +51,7 @@ void atencionporveterinarios();
 void ranking();
 main()
 {
-	system("color 0A");
+	system("color 0C");
 	setlocale(LC_ALL,"spanish");
 	
 	int opcionmenu, veterionarioasistente;
