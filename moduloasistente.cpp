@@ -221,3 +221,98 @@ main()
 	}while(opcionmenu!=5);
 }
 
+bool iniciosesion()
+{
+	FILE *arch;
+	
+	usuarios comparacion;
+	
+	bool confirmacion=false;
+	
+	char usuario[15], contrasena[35];	
+		
+	arch=fopen("Usuarios.dat", "rb");
+	
+	if(arch==NULL)
+	{
+		printf("No existe ningún usuario registrado hasta el momento.");
+		
+		confirmacion=false;
+	}
+	else
+	{
+		printf("Usuario: ");
+		_flushall();
+		
+		gets(usuario);
+		
+		printf("Contraseña: ");
+		_flushall();
+		
+		gets(contrasena);
+		
+		fread(&comparacion, sizeof(usuarios), 1, arch);//revisar 
+	
+		while(!feof(arch))
+		{
+			if(strcmp(usuario, comparacion.Usuario)==0)//revisar que hace esto
+			{
+				if(strcmp(contrasena, comparacion.Contrasena)==0)
+				{
+					confirmacion=true;
+					
+					fseek(arch, 0, SEEK_END); 
+				}
+			}
+			
+			fread(&comparacion, sizeof(usuarios), 1, arch);
+		}
+	}
+	
+	return confirmacion;
+}
+
+void registromascota()
+{
+	FILE *arch;
+	
+	mascota registro;
+	
+	printf("Apellido y Nombre: ");
+	_flushall();
+	
+	gets(registro.ApeNom);
+	
+	printf("\nDomicilio: ");
+	_flushall();
+	
+	gets(registro.Domicilio);
+	
+	printf("\nFecha de nacimiento: ");
+	printf("\nDia: ");
+	scanf("%d", &registro.fechanacimiento.dd);	
+	printf("Mes: ");
+	scanf("%d", &registro.fechanacimiento.mm);
+	printf("Año: ");
+	scanf("%d", &registro.fechanacimiento.aa);
+	
+	printf("\nLocalidad: ");
+	_flushall();
+	
+	gets(registro.Localidad);
+	
+	printf("\nPeso: ");
+	scanf("%f", &registro.Peso);
+	
+	printf("\nNúmero telefonico del dueño: ");
+	_flushall();
+	
+	gets(registro.Telefono);
+	
+	arch=fopen("Mascotas.dat", "ab+");//crea y abre el archivo 
+	
+	fwrite(&registro, sizeof(mascota), 1, arch);//revisar que hace fwrite
+	
+	fclose(arch);
+}
+
