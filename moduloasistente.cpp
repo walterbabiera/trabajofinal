@@ -51,7 +51,7 @@ void listadoturnos();
 
 main()
 {
-	setlocale(LC_ALL,"spanish");// el idioma que toma el programa
+	setlocale(LC_ALL,"spanish");
 	
 	int opcionmenu, intentarnuevamente;
 	
@@ -80,7 +80,7 @@ main()
 				
 				printf("-INICIO DE SESIÓN-\n\n");
 				
-				usuarioconfirmado=iniciosesion(); //lamado a la funcion
+				usuarioconfirmado=iniciosesion();
 				
 				if(usuarioconfirmado==true)
 				{
@@ -278,7 +278,7 @@ void registromascota()
 	
 	mascota registro;
 	
-	printf("Apellido y Nombre: ");
+	printf("Nombre de la mascota: ");
 	_flushall();
 	
 	gets(registro.ApeNom);
@@ -336,7 +336,7 @@ void registroturno()
 	
 	fread(&aux, sizeof(usuarios), 1, arch);
 	
-	while(!feof(arch))//revisar que hace feof
+	while(!feof(arch))
 	{
 		fread(&aux2, sizeof(veterinario), 1, arch);
 		
@@ -376,7 +376,7 @@ void registroturno()
 		fclose(arch);
 	}
 	
-	registro.matriculaveterinario=matricula;//registra la matricula del veterinario (guarda)
+	registro.matriculaveterinario=matricula;
 	
 	printf("\nFecha de la consulta: ");
 	printf("\nDia: ");
