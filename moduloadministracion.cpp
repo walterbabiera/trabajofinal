@@ -469,3 +469,99 @@ bool verificacionnombre(int vou, char nombre[15])
 	return verificacion;
 }
 
+
+bool verificacioncontrasena(char contra[35])
+{
+	int i, tamano, contadormayusculas=0, contadorminusculas=0, contadornumeros=0, numdigito;
+	
+	bool controldigitos, filtro, verificacion;
+	
+	tamano=strlen(contra); //cantidad predeterminada (revisar)
+	
+	//printf("%d", tamano);
+	
+	if(tamano<6 || tamano>32)
+	{
+		verificacion=false;
+		
+		return verificacion;
+	}
+	
+	for(i=0;i<tamano;i++)
+	{	
+		if(contra[i]==32 || contra[i]==33 || contra[i]==40 || contra[i]==44 || contra[i]==45 || contra[i]==46 || contra[i]==58 || contra[i]==59 || contra[i]==63 || contra[i]==91 || contra[i]==95 || contra[i]==168 || contra[i]==173)
+		{
+			verificacion=false;
+			
+			return verificacion;
+		}
+		else
+		{
+			if(contra[i]<=57 && contra[i]>=48)
+			{
+				contadornumeros++;
+				
+				numdigito=contra[i];
+				
+				//printf("\n-%d-\n", numdigito);
+				
+				if(contra[i+1]==numdigito+1)
+				{
+					if(contra[i+2]==numdigito+2)
+					{
+						verificacion=false;
+						
+						return verificacion;
+					}
+				}
+			}
+			else
+			{
+				if(contra[i]<=90 && contra[i]>=65)
+				{
+					contadormayusculas++;
+					
+					numdigito=contra[i];
+					
+					if(contra[i+1]==numdigito+1 || contra[i+1]==numdigito+33)
+					{
+						verificacion=false;
+						
+						return verificacion;
+					}
+				}
+				else
+				{
+					if(contra[i]<=122 && contra[i]>=97)
+					{	
+						contadorminusculas++;
+						
+						numdigito=contra[i];
+						
+						if(contra[i+1]==numdigito+1 || contra[i+1]==numdigito-31)
+						{
+							verificacion=false;
+							
+							return verificacion;
+						}
+						
+					}
+				}
+			}
+		}
+	}
+	
+	if(contadormayusculas>0 && contadorminusculas>0 && contadornumeros>0)
+	{
+		verificacion=true;
+		
+		return verificacion;
+	}
+	else
+	{
+		verificacion=false;
+		
+		return verificacion;
+	}
+}
+
