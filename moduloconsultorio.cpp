@@ -207,7 +207,7 @@ bool iniciosesion(int &matric)
 	usuarios aux;
 	veterinario aux2;
 	
-	FILE *arch;//solo busca
+	FILE *arch;
 	
 	printf("Matrícula de veterinario: ");
 	scanf("%d", &matricula);
@@ -239,7 +239,7 @@ bool iniciosesion(int &matric)
 		
 	while(!feof(arch))
 	{
-		//printf("\n>%s<\n", aux.Contrasena);
+	
 		
 		if(matriculaencontrada==true && strcmp(contrasena, aux.Contrasena)==0)
 		{
@@ -262,7 +262,7 @@ bool iniciosesion(int &matric)
 		iniciada=false;
 	}
 	
-	matric=matricula;//declara la matricula
+	matric=matricula;
 	
 	return iniciada;
 }
@@ -318,11 +318,11 @@ void listadoturnos(int matric)
 			
 			while(!feof(archturnos))
 			{
-				//printf("\n\n%d\n\n", auxturnos.matriculaveterinario);
+			
 				
 				if(auxturnos.matriculaveterinario==matric)
 				{
-					//printf("\n\pasa\n\n");
+				
 					
 					usado=true;
 					
@@ -332,7 +332,7 @@ void listadoturnos(int matric)
 					
 					for(i=0;i<cant;i++)
 					{
-						//printf("\n\nentra for\n\n");
+					
 						
 						if(dnis[i]==dni)
 						{
@@ -340,7 +340,7 @@ void listadoturnos(int matric)
 						}
 					}
 					
-					cant++;//incrementa la cantidad de turnos usados
+					cant++;
 					
 					if(usado==true)
 					{
@@ -348,15 +348,13 @@ void listadoturnos(int matric)
 					
 						while(!feof(archmascotas))
 						{
-							//printf("\n\nentrada archmascotas\n\n");
-							
-							//printf("\n\n%s\n\n", auxmascotas.ApeNom);
+						
 							
 							if(auxmascotas.DNI_Dueno==dni && auxturnos.borrado==false)
 							{
 								printf("Fecha de atención: %-0.2d/%-0.2d/%d", auxturnos.fechaturno.dd, auxturnos.fechaturno.mm, auxturnos.fechaturno.aa);
 								
-								printf("\nnombre de mascota: %s", auxmascotas.ApeNom);
+								printf("\nnombre de la mascota: %s", auxmascotas.ApeNom);
 								
 								printf("\nDNI dueño: %d", auxmascotas.DNI_Dueno);
 								
@@ -381,7 +379,7 @@ void listadoturnos(int matric)
 				
 				fread(&auxturnos, sizeof(turnos), 1, archturnos);
 				
-				//system("pause");
+				
 			}
 		}
 	}
@@ -418,7 +416,7 @@ void evolucion(int matric)
 		}
 		else
 		{
-			printf("Ingresar apellido y nombre de mascota que se atendió: ");
+			printf("Ingrese el nombre de la mascota que se atendió: ");
 			_flushall();
 			
 			gets(ApeNom);
