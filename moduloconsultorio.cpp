@@ -196,4 +196,197 @@ main()
 		
 	}while(opcionmenu!=4);
 }
+bool iniciosesion(int &matric)
+{
+	int matricula;
+	char contrasena[35];
+	bool matriculaencontrada=false, contrasenaencontrada=false, iniciada;
+	
+	veterinario registro;
+	
+	usuarios aux;
+	veterinario aux2;
+	
+	FILE *arch;//solo busca
+	
+	printf("Matrícula de veterinario: ");
+	scanf("%d", &matricula);
+	
+	arch=fopen("Veterinarios.dat", "rb");
+	
+	fread(&aux, sizeof(usuarios), 1, arch);
+		
+	while(!feof(arch))
+	{
+		fread(&aux2, sizeof(veterinario), 1, arch);
+		
+		if(matricula==aux2.Matricula)
+		{
+			matriculaencontrada=true;
+		}
+		
+		fread(&aux, sizeof(usuarios), 1, arch);
+	}
+	
+	fseek(arch, 0, SEEK_SET);
+	
+	printf("Contraseña: ");
+	_flushall();
+	
+	gets(contrasena);
+	
+	fread(&aux, sizeof(usuarios), 1, arch);
+		
+	while(!feof(arch))
+	{
+		//printf("\n>%s<\n", aux.Contrasena);
+		
+		if(matriculaencontrada==true && strcmp(contrasena, aux.Contrasena)==0)
+		{
+			contrasenaencontrada=true;	
+		}
+		
+		fread(&aux2, sizeof(veterinario), 1, arch);
+		
+		fread(&aux, sizeof(usuarios), 1, arch);
+	}
+	
+	fclose(arch);
+	
+	if(matriculaencontrada==true && contrasenaencontrada==true)
+	{
+		iniciada=true;
+	}
+	else
+	{
+		iniciada=false;
+	}
+	
+	matric=matricula;//declara la matricula
+	
+	return iniciada;
+}
+
+void calculoedad(int mm, int aa)
+{
+	int mes=12, ano=2020, edad;
+	
+	if(aa==ano)
+	{
+		edad=mes-mm;
+		
+		printf("Aprox %d mes/es", edad);
+	}
+	else
+	{
+		edad=ano-aa;
+		
+		printf("Aprox %d año/s", edad);
+	}
+}
+
+void listadoturnos(int matric)
+{
+	FILE *archturnos, *archmascotas;
+	
+	int i, cant=0, dni, dnis[100];
+	
+	bool usado;
+	
+	turnos auxturnos;
+	mascota auxmascotas;
+	
+	archturnos=fopen("Turnos.dat", "rb");
+	
+	if(archturnos==NULL)
+	{
+		printf("Aún no se han registrado turnos.\n");
+	}
+	else
+	{
+		archmascotas=fopen("Mascotas.dat", "rb");
+		
+		if(archmascotas==NULL)
+		{
+			printf("Aún no se han registrado mascotas.\n");
+		}
+		else
+		{
+			printf(">Turnos de veterinario c/ matricula %d<\n\n", matric);
+			
+			fread(&auxturnos, sizeof(turnos), 1, archturnos);
+			
+			while(!feof(archturnos))
+			{
+				//printf("\n\n%d\n\n", auxturnos.matriculaveterinario);
+				
+				if(auxturnos.matriculaveterinario==matric)
+				{
+					//printf("\n\pasa\n\n");
+					
+					usado=true;
+					
+					dni=auxturnos.DNI_Dueno;
+					
+					dnis[cant]=dni;
+					
+					for(i=0;i<cant;i++)
+					{
+						//printf("\n\nentra for\n\n");
+						
+						if(dnis[i]==dni)
+						{
+							usado=false;
+						}
+					}
+					
+					cant++;//incrementa la cantidad de turnos usados
+					
+					if(usado==true)
+					{
+						fread(&auxmascotas, sizeof(mascota), 1, archmascotas);
+					
+						while(!feof(archmascotas))
+						{
+							//printf("\n\nentrada archmascotas\n\n");
+							
+							//printf("\n\n%s\n\n", auxmascotas.ApeNom);
+							
+							if(auxmascotas.DNI_Dueno==dni && auxturnos.borrado==false)
+							{
+								printf("Fecha de atención: %-0.2d/%-0.2d/%d", auxturnos.fechaturno.dd, auxturnos.fechaturno.mm, auxturnos.fechaturno.aa);
+								
+								printf("\nnombre de mascota: %s", auxmascotas.ApeNom);
+								
+								printf("\nDNI dueño: %d", auxmascotas.DNI_Dueno);
+								
+								printf("\nLocalidad: %s", auxmascotas.Localidad);
+								
+								printf("\nEdad: ");
+								
+								calculoedad(auxmascotas.fechanacimiento.mm, auxmascotas.fechanacimiento.aa);
+								
+								printf("\nPeso: %.2f", auxmascotas.Peso);
+								
+								printf("\n\n");	
+							}
+							
+							fread(&auxmascotas, sizeof(mascota), 1, archmascotas);
+						}
+						
+						fseek(archmascotas, 0, SEEK_SET);
+					}
+					
+				}
+				
+				fread(&auxturnos, sizeof(turnos), 1, archturnos);
+				
+				//system("pause");
+			}
+		}
+	}
+	
+	fclose(archturnos);
+	fclose(archmascotas);
+}
 
