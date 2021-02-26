@@ -28,7 +28,7 @@ struct mascota
 {
 	char ApeNom[60];
 	char Domicilio[60];
-	int DNI_Dueno;
+	char DNI_Dueno;
 	char Localidad[60];
 	fecha fechanacimiento;
 	float Peso;
@@ -286,9 +286,11 @@ void registromascota()
 	
 	printf("\nDomicilio: ");
 	_flushall();
-	
 	gets(registro.Domicilio);
-	
+
+	/*printf("\nDNI del dueño: ");
+    _flushall();
+	gets(registro.DNI_Dueno);*/
 	printf("\nFecha de nacimiento: ");
 	printf("\nDia: ");
 	scanf("%d", &registro.fechanacimiento.dd);	
@@ -310,9 +312,9 @@ void registromascota()
 	
 	gets(registro.Telefono);
 	
-	arch=fopen("Mascotas.dat", "ab+");//crea y abre el archivo 
+	arch=fopen("Mascotas.dat", "ab+");
 	
-	fwrite(&registro, sizeof(mascota), 1, arch);//revisar que hace fwrite
+	fwrite(&registro, sizeof(mascota), 1, arch);
 	
 	fclose(arch);
 }
@@ -387,26 +389,25 @@ void registroturno()
 	printf("Año: ");
 	scanf("%d", &registro.fechaturno.aa);
 	
-	printf("\nDNI del dueño: ");
-	scanf("%d", &dni);
+	/*printf("\nDNI del dueño: ");
+	scanf("%d", &dni);*/
 	
 	arch=fopen("Mascotas.dat", "rb");
 	
 	fread(&aux3, sizeof(mascota), 1, arch);//revisar que hace
 	
-	while(!feof(arch))
+	/*while(!feof(arch))
 	{
-		if(dni==aux3.DNI_Dueno)
+		/*if(dni==aux3.DNI_Dueno)
 		{
 			dniencontrado=true;
 		}
 		
-		fread(&aux3, sizeof(mascota), 1, arch);
-	}
+		fread(&aux3, sizeof(mascota), 1, arch);*/
+	//} 
 	
-	fclose(arch);
-	
-	while(dniencontrado==false)
+	//fclose(arch);
+	/*while(dniencontrado==false)
 	{
 		printf("\n>EL DNI no pertenece a ningún dueño registrado. Intentelo nuevamente.\n\n");
 		
@@ -430,7 +431,7 @@ void registroturno()
 		fclose(arch);
 	}
 	
-	registro.DNI_Dueno=dni;
+	registro.DNI_Dueno=dni;*/
 	
 	registro.detalle[0]='-';
 	
@@ -450,7 +451,7 @@ void listadoturnos()
 	turnos registro;
 	mascota aux;
 	
-	int i, dni;
+	int i;
 	
 	char mascotas[60];
 	
@@ -476,7 +477,7 @@ void listadoturnos()
 
 		while(!feof(arch))
 		{
-			dni=registro.DNI_Dueno;
+			/*dni=registro.DNI_Dueno;
 			
 			fread(&aux, sizeof(mascota), 1, arch2);
 			
@@ -488,7 +489,7 @@ void listadoturnos()
 				}
 				
 				fread(&aux, sizeof(mascota), 1, arch2);
-			}
+			}*/
 			
 			fseek(arch2, 0, SEEK_SET);
 			
