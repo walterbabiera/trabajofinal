@@ -51,6 +51,7 @@ void listadoturnos();
 
 main()
 {
+	system("color 0C");
 	setlocale(LC_ALL,"spanish");
 	
 	int opcionmenu, intentarnuevamente;
