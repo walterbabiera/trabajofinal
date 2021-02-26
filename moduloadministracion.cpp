@@ -1,3 +1,8 @@
+/*
+                                            UTN-FRT     AyED     Comision:1k1  
+                                            
+										Nombre y apellido:   Alvarez Navarro Guadalupe	 Legajo	   50438   
+										Nombre y apellido:   Babiera Walter Alberto  	 Legajo	   49923    */
 #include<windows.h>
 #include<stdio.h>
 #include<stdlib.h>
